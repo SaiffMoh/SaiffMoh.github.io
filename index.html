@@ -1,0 +1,208 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saifeldin Yousry Ahmed - Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Saifeldin Ahmed</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section text-center">
+        <div class="container">
+            <img src="assets/profile.jpg" alt="Profile Picture" class="profile-img">
+            <h1>Saifeldin Yousry Ahmed</h1>
+            <p>Computer Engineering and Software Systems Student | Data Science & AI Enthusiast</p>
+            <a href="assets/Saifeldin_Ahmed_CV.pdf" class="btn btn-primary" download>Download CV</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About Me</h2>
+            <p>Aspiring Data Science and AI professional dedicated to solving real-world problems through technology. Focused on continuous learning, technical growth, and collaboration in dynamic environments. Currently exploring AI's roles across various fields.</p>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section bg-light">
+        <div class="container">
+            <h2>Education</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Ain Shams University International Program</h4>
+                    <p>BSc in Computer Engineering and Software Systems (Dual Degree with University of East London)</p>
+                    <p>Oct 2021 - July 2026</p>
+                    <p>Specializing in Data Science and AI</p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Dr. Nermein Ismail International Schools</h4>
+                    <p>International Baccalaureate (IB) Diploma</p>
+                    <p>Graduated 2021, Valedictorian</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+        <div class="container">
+            <h2>Experience & Training</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Huawei Academy AI Training Program, NTI</h4>
+                    <p>Jan 2025 - March 2025</p>
+                    <p>Developed AI skills in Python, machine learning, deep learning, and data analysis. Gained hands-on experience with Huawei AI platforms and quantum computing concepts.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Alstom Egypt for Transport Projects, Internship</h4>
+                    <p>July 2024 - Sept 2024</p>
+                    <p>Worked across ICC, IXL, RCM, and VV departments, gaining skills in transport project management, system integration, and rail sector safety.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>AWS Public Cloud and Red Hat System Administration, NTI</h4>
+                    <p>July 2024 - Aug 2024</p>
+                    <p>Completed 90-hour training on AWS Cloud Foundations, covering virtualization, security, and cloud economics. Prepared for Amazon Cloud Practitioner certification.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Economics Academic Assistant, Dr. Nermein Ismail American Schools</h4>
+                    <p>2022 School Year</p>
+                    <p>Assisted in data analysis and research for economics projects, supporting students and faculty.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section bg-light">
+        <div class="container">
+            <h2>Skills</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Technical Skills</h5>
+                    <ul>
+                        <li>Python</li>
+                        <li>SQL</li>
+                        <li>C/C++</li>
+                        <li>Java</li>
+                        <li>Linux</li>
+                        <li>HTML, CSS, JS</li>
+                        <li>VHDL/Verilog</li>
+                        <li>MS Office</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Data Science</h5>
+                    <ul>
+                        <li>Pandas</li>
+                        <li>NumPy</li>
+                        <li>Matplotlib</li>
+                        <li>Scikit-Learn</li>
+                        <li>TensorFlow</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Personal Skills</h5>
+                    <ul>
+                        <li>Highly Adaptive</li>
+                        <li>Problem Solver</li>
+                        <li>Strong Communicator</li>
+                        <li>Effective Leader</li>
+                        <li>Continuous Learner</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2>Projects</h2>
+            <div id="project-list" class="row"></div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <h2>Contact</h2>
+            <p><i class="fas fa-envelope"></i> saifeldin.m.ahmed@gmail.com</p>
+            <p><i class="fas fa-phone"></i> +201276795505</p>
+            <p><i class="fab fa-github"></i> <a href="https://github.com/SaiffMoh" target="_blank">github.com/SaiffMoh</a></p>
+            <p><i class="fab fa-linkedin"></i> <a href="https://linkedin.com/in/saifeldinahmed" target="_blank">linkedin.com/in/saifeldinahmed</a></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2025 Saifeldin Yousry Ahmed. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
